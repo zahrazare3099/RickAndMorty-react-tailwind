@@ -33,7 +33,7 @@ function App() {
   };
 
   return (
-    <div className="App bg-gradient-to-l from-indigo-500 via-purple-500 to-pink-500">
+    <div className="App min-h-full bg-gradient-to-l from-indigo-500 via-purple-500 to-pink-500">
       <nav className="sticky top-1 p-2 rounded-md bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500">
         <Navbar>
           <SearchInput
