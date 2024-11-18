@@ -19,7 +19,7 @@ export default function useCharacters(url, itemCheck, searchValue) {
         });
         const data = res.data.results;
 
-        setCharacterData(data?.splice(0, 10));
+        setCharacterData(data);
         // remove the controller
         () => {
           controller = null;

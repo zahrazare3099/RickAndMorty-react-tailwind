@@ -5,6 +5,7 @@ import {
   CheckCircleIcon,
 } from "@heroicons/react/24/outline";
 import toast from "react-hot-toast";
+import Pagination from "./Pagination";
 
 export default function CharacterItemShow({
   clickEyeID,
@@ -39,7 +40,14 @@ export default function CharacterItemShow({
       setEpisodes([]);
     }
   }, [clickEyeID]);
-
+  // pagination
+  const [currentPage, setCurrentPage] = useState(1);
+  const totalPages = Math.ceil(episodes.length / 5);
+  const startIndex = (currentPage - 1) * 5;
+  const currentEpisodes = episodes?.slice(startIndex, startIndex + 5);
+  const handlePageChange = (pageNumber) => {
+    setCurrentPage(pageNumber);
+  };
   return (
     <div className="basis-2/3 p-2 overflow-hidden bg-slate-900 rounded-md text-white">
       {character.length == 0 ? (
@@ -98,11 +106,21 @@ export default function CharacterItemShow({
           </div>
         </div>
       )}
-      <CharacterEpisodes episodes={episodes} />
+      <CharacterEpisodes
+        totalPages={totalPages}
+        episodes={currentEpisodes}
+        handlePageChange={handlePageChange}
+        currentPage={currentPage}
+      />
     </div>
   );
 }
-export function CharacterEpisodes({ episodes }) {
+export function CharacterEpisodes({
+  episodes,
+  handlePageChange,
+  totalPages,
+  currentPage,
+}) {
   let [sortBy, setSortBy] = useState(true);
   let episodSortedData;
   if (sortBy) {
@@ -114,6 +132,7 @@ export function CharacterEpisodes({ episodes }) {
       (a, b) => new Date(b.air_date) - new Date(a.air_date)
     );
   }
+
   return (
     <div className="flex flex-col items-start border rounded-md p-2">
       <div className="flex justify-between mb-2 items-center text-gray-500 w-full">
@@ -157,6 +176,11 @@ export function CharacterEpisodes({ episodes }) {
       ) : (
         <div>&nbsp;-&nbsp;{"".padStart(2, "0")}&nbsp;Episodes</div>
       )}
+      <Pagination
+        totalPages={totalPages}
+        currentPage={currentPage}
+        onPageChange={handlePageChange}
+      />
     </div>
   );
 }

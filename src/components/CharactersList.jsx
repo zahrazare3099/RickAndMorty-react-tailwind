@@ -1,5 +1,7 @@
 import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/outline";
 import Loader from "./Loader";
+import { useState } from "react";
+import Pagination from "./Pagination";
 
 export default function CharactersList({
   characterData,
@@ -7,26 +9,37 @@ export default function CharactersList({
   showCharacterDetails,
   clickEyeID,
 }) {
+  // pagination
+  const [currentPage, setCurrentPage] = useState(1);
+  const totalPages = Math.ceil(characterData.length / 5);
+  const startIndex = (currentPage - 1) * 5;
+  const currentItems = characterData.slice(startIndex, startIndex + 5);
+  const handlePageChange = (pageNumber) => {
+    setCurrentPage(pageNumber);
+  };
+
   if (loading) return <Loader />;
   return (
-    <div className="basis-1/2 flex flex-col gap-2 bg-slate-900 rounded-md p-2  shadow-lg">
-      {Boolean(characterData.length) ? (
-        characterData.map((character, id) => {
+    <div className="basis-1/2 flex flex-col gap-2 p-2">
+      {Boolean(currentItems.length) ? (
+        currentItems.map((character, id) => {
           return (
-            <CharacterItem
-              character={character}
-              key={id}
-              showCharacterDetails={showCharacterDetails}
-              clickEyeID={clickEyeID}
-            >
-              <button className="flex items-center justify-end px-2 ">
-                {character.id == clickEyeID ? (
-                  <EyeIcon className="w-6 h-6 text-green-500" />
-                ) : (
-                  <EyeSlashIcon className="w-6 h-6 text-red-500" />
-                )}
-              </button>
-            </CharacterItem>
+            <>
+              <CharacterItem
+                character={character}
+                key={id}
+                showCharacterDetails={showCharacterDetails}
+                clickEyeID={clickEyeID}
+              >
+                <button className="flex items-center justify-end px-2 ">
+                  {character.id == clickEyeID ? (
+                    <EyeIcon className="w-6 h-6 text-green-500" />
+                  ) : (
+                    <EyeSlashIcon className="w-6 h-6 text-red-500" />
+                  )}
+                </button>
+              </CharacterItem>
+            </>
           );
         })
       ) : (
@@ -34,6 +47,11 @@ export default function CharactersList({
           didn't have a any characters
         </div>
       )}
+      <Pagination
+        totalPages={totalPages}
+        currentPage={currentPage}
+        onPageChange={handlePageChange}
+      />
     </div>
   );
 }
@@ -49,11 +67,9 @@ export function CharacterItem({
       onClick={() => {
         showCharacterDetails(character.id);
       }}
-      className={`border ${
-        character.id == clickEyeID
-          ? "bg-fuchsia-950 border-purple-800"
-          : "border-gray-300"
-      } flex cursor-pointer hover:bg-fuchsia-950 justify-start border overflow-hidden rounded-md text-white`}
+      className={` ${
+        character.id == clickEyeID ? "bg-fuchsia-950" : "bg-slate-800"
+      } flex cursor-pointer hover:bg-fuchsia-950 justify-start overflow-hidden rounded-md text-white`}
     >
       <div className="p-2 ">
         <img
